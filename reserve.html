@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>預約行程</title>
+    <link href="https://fonts.googleapis.com/css?family=Noto+Serif+TC&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css">
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        html {
+            height: 100%; 
+        }
+
+        body {
+            background-image: url("images/reserve/reBg3.jpg");
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            background-position: bottom center;
+            background-size: cover; 
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container headerStyle">
+            <a href="index.html">
+                <h1>
+                    <img src="images/logo.png" alt="logo">
+                </h1>
+            </a>
+            <input type="checkbox" id="headerCheck">
+            <label for="headerCheck" class="headerClick">
+                <span></span>
+                <span></span>
+                <span></span>
+            </label>
+            <nav class="navMenu">
+                <div class="navDarken">
+                    <ul>
+                        <li>
+                            <a href="#">行程介紹</a>
+                        </li>
+                        <li>
+                            <a href="reserve.html" class="nowpage">預約行程</a>
+                        </li>
+                        <li>
+                            <a href="#">客製明信片</a>
+                        </li>
+                        <li>
+                            <a href="#">購物商城</a>
+                        </li>
+                    </ul>
+                    <div class="headerMemInfo">
+                        <span id="headerMemName"></span>
+                        <a href="javascript:;"></a>
+                    </div>
+                </div>
+            </nav>
+        
+            <div class="headerIcon">
+                <a href="#" id="shopcart">
+                    <img src="images/icon_shopcar.png" alt="icon_shopcar">
+                </a>
+                <a  id="memberInfo"  href="#">
+                    <img src="images/icon_login.png" alt="icon_login">
+                </a>
+            </div>
+           
+        </div>
+    </header>
+
+    <div style="display: inline-block"></div>
+    <div class="linearOrange">
+        <section class="indexReserve">
+            <h1 class="">預約行程</h1>
+            <div class="containerpa"  id="revform">
+                <div class="row">
+                    <div class="col-12 col-md-6 indexReLeft">
+                        <form action="#" >
+                            <div class="indexReContent">
+                                <p class="knowUs">想要更加了解九份嗎?歡迎預約專屬行程!</p>
+                                <div class="reYuJourney">
+                                    <label for="seYuJourney">想選的旅程:</label>
+                                    <select id="seYuJourney" v-model="selectJourney" @change="queryDate">
+                                        <option v-for="journey in journeys">{{journey}}</option>
+                                    </select>
+                                </div>
+                                <div class="reYuPeople" >
+                                    <label for="seYuPeople">選擇的人數:</label>
+                                    <select id="seYuPeople"  v-model="selectPeople" @change="queryDate">
+                                        <option v-for="people in 20">{{people}}</option>
+                                    </select>
+                                </div>
+                                <p>請先選擇旅程及人數，再選擇可預約的日期<br>
+                                    <span class="reComfirmDate">!!!還未選擇日期!!!</span>
+                                </p>
+                                <div class="reComfirmInform">
+                                    <div class="reInformLeft">
+                                        <p>時間</p>
+                                        <p>集合地點</p>
+                                    </div>
+
+                                    <div class="reInformRight">
+                                        <p>9:00~12:00</p>
+                                        <p id="peopleShouldGo">九份客棧</p>
+                                    </div>
+                                    <div class="clearfix"></div>
+                                </div>
+                                <div class="verificationCode">
+                                    <div class="textCode">
+                                        <label for="enterCode">請輸入驗證碼:</label>
+                                        <input type="text" id="enterCode" v-model="inputCode">
+                                        <div>
+                                            <span id="produceCode" @click="createCode()">{{randomNum}}</span>
+                                            <img @click="createCode()" src="images/reserve/produceCodeAgain.png" alt="produceCodeAgain">
+                                        </div>
+                                    
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="whiteButton" id="submit" @click="submitRev">送出</div>
+                        </form>
+                    </div>
+                    <div class="col-12 col-md-5 indexReRight">
+                        <div class="reserveCalendar">
+                            <div class="calendarBox">
+                                <div class="calendarTitle">
+                                    <span class="caLeftArrow disabled"></span>
+                                    <span id="calendarYear"></span>
+                                    <span>/</span>
+                                    <span id="calendarMonth"></span>
+                                    <span class="caRightArrow"></span>
+                                </div>
+                                <div class="calendarBody">
+                                    <div class="calendarWeek">
+                                        <ul>
+                                            <li>日</li>
+                                            <li>一</li>
+                                            <li>二</li>
+                                            <li>三</li>
+                                            <li>四</li>
+                                            <li>五</li>
+                                            <li>六</li>
+                                        </ul>
+                                    </div>
+                                    <div class="calendarBody" id="calendarCon"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="timelyBus"> 
+            <h1>即時公車資訊</h1>
+            <div class="container" >
+                <div class="busContent">
+                    <div class="chooseBusPlace">
+                        <div class="leafButton route active" data-route="856(台灣好行-黃金福隆線)">尋幽訪古</div>
+                        <div class="leafButton route" data-route="791">漫遊山城</div>
+                        <div class="leafButton route " data-route="788">船遊秘境</div>
+                    </div>
+                    <div class="chooseBusDirection">
+                        <div class="commonButton direction active" data-target="0">去程</div>
+                        <div class="commonButton direction " data-target="1">回程</div>
+                    </div>
+                    <h3 id="busStopName">
+                        <span class="chplace"></span>
+                        <span class="chtime"></span></h3>
+                    </h3>
+                    <div class="mobileShow" ></div>
+                    <div class="computerShow"></div>
+                </div>
+                <div class="cat">
+                    <img src="images/reserve/cat.png" alt="cat">
+                </div>
+                <div class="feetLeft">
+                    <div class="catFeet1 catFeet">
+                        <img src="images/reserve/footl1.png" alt="footl">
+                    </div>
+                    <div class="catFeet2 catFeet">
+                        <img src="images/reserve/footl2.png" alt="footl">
+                    </div>
+                    <div class="catFeet3 catFeet">
+                        <img src="images/reserve/footl3.png" alt="footl">
+                    </div>
+                    <div class="catFeet4 catFeet">
+                        <img src="images/reserve/footl4.png" alt="footl">
+                    </div>
+                </div>
+                <div class="feetRight">
+                    <div class="catFeetr1 catFeet">
+                        <img src="images/reserve/footr1.png" alt="footr">
+                    </div>
+                    <div class="catFeetr2 catFeet">
+                        <img src="images/reserve/footr2.png" alt="footr">
+                    </div>
+                    <div class="catFeetr3 catFeet">
+                        <img src="images/reserve/footr3.png" alt="footr">
+                    </div>
+                </div>
+            </div>
+        </section>
+        <div class="waitingBus">
+            <div class="busLeft">
+                <img src="images/reserve/bigBus.png" alt="bus">
+            </div>
+            <div class="busStopRight">
+                <div class="busStop">
+                    <img src="images/reserve/busStop.png" alt="busstop">
+                </div>
+                <div class="waitLine">
+                    <div class="waitGirl">
+                        <img src="images/reserve/waitbuspeople.png" alt="waitgirl">
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    
+    </div>
+    <footer>
+        <div>
+            <a href="#">
+                <i class="fa fa-facebook" aria-hidden="true"></i>
+            </a>
+            <a href="#">
+                <i class="fa fa-twitter" aria-hidden="true"></i>
+            </a>
+            <a href="#">
+                <i class="fa fa-instagram" aria-hidden="true"></i>
+            </a>
+        </div>
+        <p>DD103 G1 copyright</p>
+    </footer>
+    <div class="alertWindow">
+        <div class="alert">
+            <div class="alertTitle">提示</div>
+            <div class="alertContent">我是內容</div>
+            <div class="closeWrap">
+                <div class="yesButton whiteButton">確認</div>
+                <div class="cancelButton whiteButton">取消</div>
+            </div>
+            <div class="alertClose">
+                <i class="fa fa-times-circle Trip2_lightBoxBTN" aria-hidden="true" id="Trip2_lightBoxBTN02"></i>
+            </div>
+        
+        </div>
+    </div>
+    <section id="login" class="Loginwrap">
+        <div class="LoginForm">
+            <div class="Loginhead" id="LoginForm-head">
+                <div data-tab="login">
+                    <div class="Loginclose">
+                        <h3>會員登入</h3>
+                        <i class="fa fa-times-circle Trip2_lightBoxBTN game_close" aria-hidden="true"></i>
+                    </div>
+                </div>
+            </div>
+            <form action="">
+                <div class="Loginbody" id="LoginForm-body">
+                    <div class="Login-login">
+                        <div class="LoginForm-row">
+                            <label class="LoginLabel" for="">帳號</label>
+                            <input class="Logininput" id="user-id" type="text" placeholder="account" autocomplete="on">
+                        </div>
+                        <div class="LoginForm-row">
+                            <label class="LoginLabel" for="">密碼</label>
+                            <input class="Logininput" type="password" id="user-psw" placeholder="Password"
+                                autocomplete="on">
+                        </div>
+                        <div class="Login-forget">
+                            <a class="Login-forget-password" id="linkLoginForget">
+                                <p class="LoginP">忘記密碼</p>
+                            </a>
+                        </div>
+                        <div class="LoginForm-row">
+                            <div class="LoginBtnCenter whiteButton">登入</div>
+                        </div>
+                        <a class="LoginForm-signup-now" href="javascript:;">立即註冊</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </section>
+    <section id="loginRegister" class="Loginwrap">
+        <div class="LoginForm">
+            <div class="Loginhead" id="LoginForm-head">
+                <div data-tab="login">
+                    <div class="Loginclose">
+                        <h3>會員註冊</h3>
+                        <i class="fa fa-times-circle Trip2_lightBoxBTN game_close" aria-hidden="true" @click="clear"></i>
+                    </div>
+                </div>
+            </div>
+            <form action="" id="myForm">
+                <div class="Loginbody" id="LoginForm-body">
+                    <div class="Login-signup">
+                        <div class="LoginForm-row">
+                            <label class="Loginlabal">姓名</label>
+                            <input class="Logininput" type="text" placeholder="輸入您的名字" v-model="memName">
+                        </div>
+                        <div class="LoginForm-row">
+                            <label class="Loginlabal">帳號<span class="errMsg">{{idMsg}}</span></label>
+                            <input class="Logininput" v-model="memId" @change="testId" type="text" placeholder="4~10個英文字或數字"
+                                maxlength="10">
+    
+                        </div>
+                        <div class="LoginForm-row">
+                            <label class="Loginlabal" style="color:aliceblue;">密碼<span
+                                    class="errMsg">{{pswMsg}}</span></label>
+                            <input class="Logininput" @change="testPsw" v-model="memPassword" type="password"
+                                placeholder="英文開頭且包含數字">
+                        </div>
+                        <div class="LoginForm-row">
+                            <label class="Loginlabal" style="color:aliceblue;">密碼確認<span
+                                    class="errMsg">{{pswConfirmMsg}}</span></label>
+                            <input class="Logininput" type="password" placeholder="再次輸入您的密碼" v-model="pswConfirm">
+                        </div>
+                        <div class="LoginForm-row">
+                            <label class="Loginlabal" style="color:aliceblue;">Email<span
+                                    class="errMsg">{{emailMsg}}</span></label>
+                            <input class="Logininput" v-model="memEmail" type="text" @change="testEmail"
+                                placeholder="輸入您的信箱">
+                        </div>
+                        <div class="LoginForm-row">
+                            <div class="LoginBtnR">
+                                <div class="whiteButton">
+                                    <a href="#" id="signup" name="signup" @click="submit">註冊</a>
+                                </div>
+                            </div>
+                            <div class="LoginBtnL">
+                                <div class="whiteButton">
+                                    <a href="javascript:;" @click="clear">回上頁</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </section>
+    <section id="loginforget" class="Loginwrap">
+        <div class="LoginForm">
+            <div class="Loginhead" id="LoginForm-head">
+                <div data-tab="login">
+                    <div class="Loginclose">
+                        <h3>重設密碼</h3>
+                        <i class="fa fa-times-circle Trip2_lightBoxBTN game_close" aria-hidden="true" @click="clear"></i>
+    
+                    </div>
+                </div>
+            </div>
+            <form action="#">
+                <div class="Loginbody LoginForm-body">
+                    <div class="login">
+                        <div class="LoginForm-row">
+                            <label class="LoginLabel">Email<span class="errMsg">{{errMsg}}</span></label>
+                            <input class="Logininput" type="email" placeholder="輸入您的信箱" v-model="email" @change="test"
+                                id="inputEmail">
+                        </div>
+                        <p class="resetpsw">*請送出表單後,到信箱查看並重設密碼*</p>
+                        <div class="LoginForm-row fix">
+                            <div class="LoginBtnR">
+                                <div class="whiteButton">
+                                    <a href="#" @click="submitEmail">
+                                        送出
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="LoginBtnL">
+                                <div class="whiteButton">
+                                    <a href="javascript:;" @click="clear">回上頁</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </section>
+<!-- <script src="js/busAPI.js"></script> -->
+<script src="js/vue-2.6.10.min.js"></script>
+<script src="js/alert.js"></script>
+<script src="js/login.js"></script>
+<script src="js/register.js"></script>
+<script src="js/forgetPsw.js"></script>
+<script src="js/reserveMove.js"></script>
+<script src="js/reserveDate.js"></script>
+<script src="js/canlendar.js"></script>
+</body>
+</html>
